@@ -15,5 +15,13 @@ class UserService {
     );
   }
 
-  signupUser({required String email, required String password}) {}
+  Future<UserCredential> signupUser({
+    required String email,
+    required String password,
+  }) {
+    return FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+  }
 }

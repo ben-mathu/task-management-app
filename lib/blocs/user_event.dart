@@ -1,10 +1,15 @@
 enum UserEventType {
-  appOpened, login, openSignUpWindow
+  appOpened,
+  login,
+  openSignUpWindow,
+  loginFailed,
+  signUpFailed,
 }
 
 class UserEvent {
   final String? username;
   final String? password;
   final UserEventType type;
-  UserEvent({this.username, this.password, required this.type});
+  final String? code;
+  UserEvent({this.username, this.password, required this.type, this.code});
 }

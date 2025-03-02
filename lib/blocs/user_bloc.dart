@@ -22,6 +22,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         );
       } else if (event.type == UserEventType.openSignUpWindow) {
         emit(UserState(type: UserStateType.requireSignUp));
+      } else if (event.type == UserEventType.loginFailed) {
+        emit(UserState(type: UserStateType.loginError, code: event.code));
+      } else if (event.type == UserEventType.signUpFailed) {
+        emit(UserState(type: UserStateType.signUpError));
       }
     });
   }
