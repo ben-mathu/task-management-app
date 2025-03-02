@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum UserStateType {
-  initial, signedIn, signedOut, skipped
+  initial, signedIn, signedOut, skipped, requireSignUp
 }
 
 class UserState {

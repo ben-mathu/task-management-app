@@ -10,7 +10,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (BuildContext context) {
+      return UserBloc();
+    })
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

@@ -1,5 +1,5 @@
 enum UserEventType {
-  appOpened, login
+  appOpened, login, openSignUpWindow
 }
 
 class UserEvent {
