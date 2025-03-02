@@ -123,3 +123,7 @@ app.*.symbols
 **/GoogleService-info.plist
 lib/firebase_options.dart
 /.idea
+.DS_Store
+.DS_Store
+ios/.DS_Store
+ios/.DS_Store
