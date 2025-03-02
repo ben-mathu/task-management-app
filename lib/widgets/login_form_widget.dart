@@ -4,14 +4,14 @@ import 'package:jenga_planner/widgets/custom_button_widget.dart';
 class LoginForm extends StatefulWidget {
   final bool isLoading;
   final Function(String username, String password) onPressed;
-  final VoidCallback metaCallback;
+  final VoidCallback facebookCallback;
   final VoidCallback twitterCallback;
   final VoidCallback googlCallback;
 
   LoginForm({
     required this.onPressed,
     required this.googlCallback,
-    required this.metaCallback,
+    required this.facebookCallback,
     required this.twitterCallback,
     this.isLoading = false,
   });

@@ -86,8 +86,44 @@ class _LoginScreenState extends State<LoginScreen> {
                       _isLoading = false;
                     });
                   },
-                  metaCallback: () {},
-                  googlCallback: () {},
+                  facebookCallback: () {
+                    _userService
+                        .signInWithFaceBook()
+                        .then((credentials) {})
+                        .onError((FirebaseAuthException e, stacktrace) {
+                          if (e.code == 'user-not-found') {
+                            _userBloc!.add(
+                              UserEvent(type: UserEventType.openSignUpWindow),
+                            );
+                          } else {
+                            _userBloc!.add(
+                              UserEvent(
+                                type: UserEventType.loginFailed,
+                                code: e.code,
+                              ),
+                            );
+                          }
+                        });
+                  },
+                  googlCallback: () {
+                    _userService
+                        .signInWithGoogle()
+                        .then((credentials) {})
+                        .onError((FirebaseAuthException e, stacktrace) {
+                          if (e.code == 'user-not-found') {
+                            _userBloc!.add(
+                              UserEvent(type: UserEventType.openSignUpWindow),
+                            );
+                          } else {
+                            _userBloc!.add(
+                              UserEvent(
+                                type: UserEventType.loginFailed,
+                                code: e.code,
+                              ),
+                            );
+                          }
+                        });
+                  },
                   twitterCallback: () {},
                   isLoading: _isLoading,
                 ),
@@ -130,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 _isLoading = false;
               });
             },
-            metaCallback: () {},
+            facebookCallback: () {},
             googlCallback: () {},
             twitterCallback: () {},
             isLoading: _isLoading,
