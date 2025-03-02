@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
-  final String text;
+  final String? text;
   final VoidCallback onPressed;
+  final bool isLoading;
   const CustomButton({
     super.key,
     required this.onPressed,
-    required this.text
+    this.text,
+    this.isLoading = false,
   });
 
   @override
@@ -19,12 +21,17 @@ class CustomButton extends StatelessWidget {
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(5.0),
-              ),
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
             ),
           ),
-          child: Text(text),
+          child:
+              isLoading
+                  ? SizedBox(
+                    width: 20.0,
+                    height: 20.0,
+                    child: CircularProgressIndicator(),
+                  )
+                  : Text(text!),
         ),
       ),
     );
