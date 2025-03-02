@@ -122,10 +122,4 @@ app.*.symbols
 **/google-services.json
 **/GoogleService-info.plist
 lib/firebase_options.dart
-/.idea/misc.xml
-/.idea/libraries/Dart_Packages.xml
-/.idea/libraries/Flutter_Plugins.xml
-/.idea/vcs.xml
-/.idea/shelf/Changes/shelved.patch
-/.idea/shelf/Changes.xml
-/.idea/caches/deviceStreaming.xml
+/.idea
