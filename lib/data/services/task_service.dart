@@ -15,7 +15,7 @@ class TaskService {
     );
     final taskId = await saveTask(task);
 
-    List<CheckListCompanion> checkList = List.empty();
+    List<CheckListCompanion> checkList = [];
     for (var subtask in subTasks) {
       checkList.add(CheckListCompanion(title: Value(subtask)));
     }
@@ -25,8 +25,10 @@ class TaskService {
     }
   }
 
-  saveTask(TaskCompanion task) async {
-    await _database.into(_database.task).insert(task, mode: InsertMode.replace);
+  Future<int> saveTask(TaskCompanion task) async {
+    return await _database
+        .into(_database.task)
+        .insert(task, mode: InsertMode.replace);
   }
 
   saveSubTask(CheckListCompanion item) async {

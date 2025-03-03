@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return BlocListener<TaskBloc, TaskState>(
       listener: (BuildContext context, TaskState state) {
         if (state.type == TaskStateType.update) {
+          Navigator.pop(context);
           _taskService.getTasks().then(
             (tasks) => {
               setState(() {
