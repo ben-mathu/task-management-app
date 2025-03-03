@@ -4,7 +4,7 @@ import 'package:jenga_planner/data/models.dart';
 
 part 'app_database.g.dart';
 
-@DriftDatabase(tables: [Task])
+@DriftDatabase(tables: [Task, CheckList])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
