@@ -57,6 +57,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ).showSnackBar(SnackBar(content: Text(message)));
           } else if (state.type == UserStateType.signedIn) {
             Navigator.pushNamed(context, AppRoutes.root);
+          } else if (state.type == UserStateType.skipped) {
+            Navigator.pushNamed(context, AppRoutes.root);
           }
         },
         child: Center(
