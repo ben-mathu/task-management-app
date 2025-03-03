@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jenga_planner/blocs/user_bloc.dart';
-import 'package:jenga_planner/blocs/user_event.dart';
-import 'package:jenga_planner/blocs/user_state.dart';
+import 'package:jenga_planner/blocs/user/user_bloc.dart';
+import 'package:jenga_planner/blocs/user/user_event.dart';
+import 'package:jenga_planner/blocs/user/user_state.dart';
 import 'package:jenga_planner/data/services/user_service.dart';
 import 'package:jenga_planner/routes.dart';
 import 'package:jenga_planner/widgets/login_form_widget.dart';

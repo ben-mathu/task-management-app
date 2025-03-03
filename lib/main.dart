@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:jenga_planner/blocs/user_bloc.dart';
-import 'package:jenga_planner/blocs/user_state.dart';
+import 'package:jenga_planner/blocs/user/user_bloc.dart';
+import 'package:jenga_planner/blocs/user/user_state.dart';
 import 'package:jenga_planner/firebase_options.dart';
 import 'package:jenga_planner/routes.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,11 +10,18 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(create: (BuildContext context) {
-      return UserBloc();
-    })
-  ], child: const MyApp()));
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (BuildContext context) {
+            return UserBloc();
+          },
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
