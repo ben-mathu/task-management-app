@@ -55,7 +55,11 @@ class _LoginFormState extends State<LoginForm> {
           Row(
             spacing: 10.0,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [logoButton('assets/images/google_logo.png', () {})],
+            children: [
+              logoButton('assets/images/google_logo.png', () {
+                widget.googlCallback();
+              }),
+            ],
           ),
         ],
       ),

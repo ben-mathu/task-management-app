@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
             } else if (state.code == 'network-request-failed') {
               message = 'Please check you connection, then try again.';
             } else {
-              throw UnimplementedError('handle error ${state.code}');
+              throw UnimplementedError('Error ${state.code} was not handled');
             }
 
             ScaffoldMessenger.of(
@@ -97,7 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       _isLoading = false;
                     });
                   },
-                  googlCallback: googleSignIn,
+                  googlCallback: () {
+                    _googleSignIn();
+                  },
                   isLoading: _isLoading,
                 ),
                 TextButton(
@@ -163,7 +165,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 _isLoading = false;
               });
             },
-            googlCallback: googleSignIn,
+            googlCallback: () {
+              _googleSignIn();
+            },
             isLoading: _isLoading,
           ),
         );
@@ -171,7 +175,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  get googleSignIn => () {
+  _googleSignIn() {
     _userService
         .signInWithGoogle()
         .then((credentials) {
@@ -186,5 +190,5 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
         });
-  };
+  }
 }
