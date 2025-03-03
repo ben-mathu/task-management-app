@@ -1,8 +1,37 @@
 # jenga_planner
 
-A new Flutter project.
+A application to help with management of tasks
 
 ## Getting Started
+
+### Project Setup
+
+Make sure you have the Firebase CLI.
+Find installation instructions [here](https://firebase.google.com/docs/cli?hl=en&authuser=0#install_the_firebase_cli)
+
+Open Firebase console and create a project
+
+Configure firebase to the project by running:
+
+```shell
+firebase login
+```
+
+Make sure you are signed in using:
+
+```shell
+firebase project:list
+```
+
+Next run:
+
+```shell
+flutterfire configure --project=jenga-planner
+```
+
+to configure the project
+
+You can also follow configuration instructions in [Add Firebase to your Flutter app](https://firebase.google.com/docs/flutter/setup?authuser=0&hl=en&platform=ios)
 
 This project is a starting point for a Flutter application.
 
