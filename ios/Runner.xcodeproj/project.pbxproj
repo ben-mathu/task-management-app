@@ -116,7 +116,6 @@
 				B488DBA6FF2681CC31629A55 /* Pods-RunnerTests.release.xcconfig */,
 				D38A552131C1FFC0645ECF5D /* Pods-RunnerTests.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -525,7 +524,6 @@
 		};
 		331C808A294A63A400263BE5 /* Profile */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D38A552131C1FFC0645ECF5D /* Pods-RunnerTests.profile.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;

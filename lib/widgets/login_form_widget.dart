@@ -4,15 +4,15 @@ import 'package:jenga_planner/widgets/custom_button_widget.dart';
 class LoginForm extends StatefulWidget {
   final bool isLoading;
   final Function(String username, String password) onPressed;
-  final VoidCallback facebookCallback;
-  final VoidCallback twitterCallback;
+  final VoidCallback? facebookCallback;
+  final VoidCallback? twitterCallback;
   final VoidCallback googlCallback;
 
   LoginForm({
     required this.onPressed,
     required this.googlCallback,
-    required this.facebookCallback,
-    required this.twitterCallback,
+    this.facebookCallback,
+    this.twitterCallback,
     this.isLoading = false,
   });
 
@@ -21,7 +21,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  bool _obscurePassword = false;
+  bool _obscurePassword = true;
 
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -53,7 +53,7 @@ class _LoginFormState extends State<LoginForm> {
           Text('Or continue with'),
           Divider(indent: 90.0, endIndent: 90.0),
           Row(
-            spacing: 30.0,
+            spacing: 10.0,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               logoButton('assets/images/meta_logo.png', () {}),
@@ -84,8 +84,8 @@ class _LoginFormState extends State<LoginForm> {
             },
             child:
                 _obscurePassword
-                    ? Icon(Icons.visibility_off)
-                    : Icon(Icons.visibility),
+                    ? Icon(Icons.visibility)
+                    : Icon(Icons.visibility_off),
           ),
         ),
         keyboardType: TextInputType.text,

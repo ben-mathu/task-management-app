@@ -5,6 +5,7 @@ import 'package:jenga_planner/blocs/user_bloc.dart';
 import 'package:jenga_planner/blocs/user_event.dart';
 import 'package:jenga_planner/blocs/user_state.dart';
 import 'package:jenga_planner/data/services/user_service.dart';
+import 'package:jenga_planner/routes.dart';
 import 'package:jenga_planner/widgets/login_form_widget.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -45,6 +46,8 @@ class _LoginScreenState extends State<LoginScreen> {
               message = 'Please use a stronger password';
             } else if (state.code == 'email-already-in-use') {
               message = 'The email you provided already exists.';
+            } else if (state.code == 'network-request-failed') {
+              message = 'Please check you connection, then try again.';
             } else {
               throw UnimplementedError('handle error ${state.code}');
             }
@@ -52,6 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(message)));
+          } else if (state.type == UserStateType.signedIn) {
+            Navigator.pushNamed(context, AppRoutes.root);
           }
         },
         child: Center(
@@ -66,7 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: (email, password) {
                     _userService
                         .loginUser(email: email, password: password)
-                        .then((value) {})
+                        .then((value) {
+                          _userBloc?.add(
+                            UserEvent(type: UserEventType.successfulSignIn),
+                          );
+                        })
                         .onError((FirebaseAuthException e, stacktrace) {
                           if (e.code == 'user-not-found') {
                             _userBloc!.add(
@@ -86,45 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       _isLoading = false;
                     });
                   },
-                  facebookCallback: () {
-                    _userService
-                        .signInWithFaceBook()
-                        .then((credentials) {})
-                        .onError((FirebaseAuthException e, stacktrace) {
-                          if (e.code == 'user-not-found') {
-                            _userBloc!.add(
-                              UserEvent(type: UserEventType.openSignUpWindow),
-                            );
-                          } else {
-                            _userBloc!.add(
-                              UserEvent(
-                                type: UserEventType.loginFailed,
-                                code: e.code,
-                              ),
-                            );
-                          }
-                        });
-                  },
-                  googlCallback: () {
-                    _userService
-                        .signInWithGoogle()
-                        .then((credentials) {})
-                        .onError((FirebaseAuthException e, stacktrace) {
-                          if (e.code == 'user-not-found') {
-                            _userBloc!.add(
-                              UserEvent(type: UserEventType.openSignUpWindow),
-                            );
-                          } else {
-                            _userBloc!.add(
-                              UserEvent(
-                                type: UserEventType.loginFailed,
-                                code: e.code,
-                              ),
-                            );
-                          }
-                        });
-                  },
-                  twitterCallback: () {},
+                  googlCallback: googleSignIn,
                   isLoading: _isLoading,
                 ),
                 TextButton(
@@ -137,6 +108,23 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   child: Text('Don\'t have an account? Sign Up'),
+                ),
+                SizedBox(
+                  width: 190.0,
+                  child: TextButton(
+                    onPressed: () {
+                      _userBloc?.add(UserEvent(type: UserEventType.skipSignIn));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [Text('Skip'), Icon(Icons.skip_next)],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -157,22 +145,44 @@ class _LoginScreenState extends State<LoginScreen> {
               _userService
                   .signupUser(email: email, password: password)
                   .then((credentials) {
-                    print('Logged in successfully');
+                    _userBloc?.add(
+                      UserEvent(type: UserEventType.successfulSignIn),
+                    );
                   })
                   .onError((FirebaseAuthException error, stackTrace) {
-                    _userBloc!.add(UserEvent(type: UserEventType.signUpFailed));
+                    _userBloc!.add(
+                      UserEvent(
+                        type: UserEventType.signUpFailed,
+                        code: error.code,
+                      ),
+                    );
                   });
               setState(() {
                 _isLoading = false;
               });
             },
-            facebookCallback: () {},
-            googlCallback: () {},
-            twitterCallback: () {},
+            googlCallback: googleSignIn,
             isLoading: _isLoading,
           ),
         );
       },
     );
   }
+
+  get googleSignIn => () {
+    _userService
+        .signInWithGoogle()
+        .then((credentials) {
+          _userBloc?.add(UserEvent(type: UserEventType.successfulSignIn));
+        })
+        .onError((FirebaseAuthException e, stacktrace) {
+          if (e.code == 'user-not-found') {
+            _userBloc!.add(UserEvent(type: UserEventType.openSignUpWindow));
+          } else {
+            _userBloc!.add(
+              UserEvent(type: UserEventType.loginFailed, code: e.code),
+            );
+          }
+        });
+  };
 }

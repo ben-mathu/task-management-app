@@ -4,6 +4,8 @@ enum UserEventType {
   openSignUpWindow,
   loginFailed,
   signUpFailed,
+  skipSignIn,
+  successfulSignIn,
 }
 
 class UserEvent {
