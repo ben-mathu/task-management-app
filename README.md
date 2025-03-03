@@ -44,7 +44,15 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-### Run the app
+### Database set up
+
+Run this command to generate models for the databse
+
+```shell
+flutter pub run build_runner build
+```
+
+## Run the app
 
 Start the application by running this command
 
