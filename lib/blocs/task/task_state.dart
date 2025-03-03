@@ -1,4 +1,4 @@
-enum TaskStateType { initial }
+enum TaskStateType { initial, update }
 
 class TaskState {
   final TaskStateType type;

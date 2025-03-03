@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jenga_planner/blocs/task/task_bloc.dart';
+import 'package:jenga_planner/blocs/task/task_event.dart';
 import 'package:jenga_planner/data/services/task_service.dart';
 import 'package:jenga_planner/widgets/custom_button_widget.dart';
 
@@ -28,12 +31,12 @@ class _TaskFormState extends State<TaskForm> {
     });
   }
 
-  void _submitForm() {
+  _submitForm() async {
     if (_formKey.currentState!.validate()) {
       List<String> subTasks =
           _subTaskControllers.map((controller) => controller.text).toList();
 
-      _taskService.saveTask(
+      await _taskService.saveTaskWithSubtasks(
         _titleController.text,
         _descriptionController.text,
         subTasks,
@@ -43,6 +46,8 @@ class _TaskFormState extends State<TaskForm> {
 
   @override
   Widget build(BuildContext context) {
+    final taskBloc = BlocProvider.of<TaskBloc>(context);
+
     return Form(
       key: _formKey,
       child: SingleChildScrollView(
@@ -111,7 +116,13 @@ class _TaskFormState extends State<TaskForm> {
             // Submit Button
             SizedBox(height: 20),
             Center(
-              child: CustomButton(onPressed: _submitForm, text: 'Submit Task'),
+              child: CustomButton(
+                onPressed: () async {
+                  await _submitForm();
+                  taskBloc.add(TaskEvent(TaskEventType.notifyTaskListChanged));
+                },
+                text: 'Submit Task',
+              ),
             ),
           ],
         ),

@@ -4,12 +4,16 @@ import 'package:jenga_planner/data/app_database.dart';
 class TaskService {
   final _database = AppDatabase();
 
-  saveTask(String title, String description, List<String> subTasks) async {
+  saveTaskWithSubtasks(
+    String title,
+    String description,
+    List<String> subTasks,
+  ) async {
     final task = TaskCompanion(
       title: Value(title),
       description: Value(description),
     );
-    final taskId = await _database.into(_database.task).insert(task);
+    final taskId = await saveTask(task);
 
     List<CheckListCompanion> checkList = List.empty();
     for (var subtask in subTasks) {
@@ -17,7 +21,21 @@ class TaskService {
     }
     for (var item in checkList) {
       item = item.copyWith(taskId: Value(taskId));
-      await _database.into(_database.checkList).insert(item);
+      await saveSubTask(item);
     }
+  }
+
+  saveTask(TaskCompanion task) async {
+    await _database.into(_database.task).insert(task, mode: InsertMode.replace);
+  }
+
+  saveSubTask(CheckListCompanion item) async {
+    await _database
+        .into(_database.checkList)
+        .insert(item, mode: InsertMode.replace);
+  }
+
+  Future<List<TaskData>> getTasks() {
+    return _database.select(_database.task).get();
   }
 }

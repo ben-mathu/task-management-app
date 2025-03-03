@@ -3,5 +3,11 @@ import 'package:jenga_planner/blocs/task/task_event.dart';
 import 'package:jenga_planner/blocs/task/task_state.dart';
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
-  TaskBloc() : super(TaskState(TaskStateType.initial));
+  TaskBloc() : super(TaskState(TaskStateType.initial)) {
+    on<TaskEvent>((event, emit) {
+      if (event.type == TaskEventType.notifyTaskListChanged) {
+        emit(TaskState(TaskStateType.update));
+      }
+    });
+  }
 }
