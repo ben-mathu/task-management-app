@@ -61,76 +61,80 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pushNamed(context, AppRoutes.root);
           }
         },
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Column(
-              spacing: 30.0,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset('assets/images/login.gif'),
-                LoginForm(
-                  onPressed: (email, password) {
-                    _userService
-                        .loginUser(email: email, password: password)
-                        .then((value) {
-                          _userBloc?.add(
-                            UserEvent(type: UserEventType.successfulSignIn),
-                          );
-                        })
-                        .onError((FirebaseAuthException e, stacktrace) {
-                          if (e.code == 'user-not-found') {
-                            _userBloc!.add(
-                              UserEvent(type: UserEventType.openSignUpWindow),
+        child: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Column(
+                spacing: 30.0,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset('assets/images/login.gif'),
+                  LoginForm(
+                    onPressed: (email, password) {
+                      _userService
+                          .loginUser(email: email, password: password)
+                          .then((value) {
+                            _userBloc?.add(
+                              UserEvent(type: UserEventType.successfulSignIn),
                             );
-                          } else {
-                            _userBloc!.add(
-                              UserEvent(
-                                type: UserEventType.loginFailed,
-                                code: e.code,
-                              ),
-                            );
-                          }
-                        });
+                          })
+                          .onError((FirebaseAuthException e, stacktrace) {
+                            if (e.code == 'user-not-found') {
+                              _userBloc!.add(
+                                UserEvent(type: UserEventType.openSignUpWindow),
+                              );
+                            } else {
+                              _userBloc!.add(
+                                UserEvent(
+                                  type: UserEventType.loginFailed,
+                                  code: e.code,
+                                ),
+                              );
+                            }
+                          });
 
-                    setState(() {
-                      _isLoading = false;
-                    });
-                  },
-                  googlCallback: () {
-                    _googleSignIn();
-                  },
-                  isLoading: _isLoading,
-                ),
-                TextButton(
-                  onPressed: () {
-                    _showDialog(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    ),
+                      setState(() {
+                        _isLoading = false;
+                      });
+                    },
+                    googlCallback: () {
+                      _googleSignIn();
+                    },
+                    isLoading: _isLoading,
                   ),
-                  child: Text('Don\'t have an account? Sign Up'),
-                ),
-                SizedBox(
-                  width: 190.0,
-                  child: TextButton(
+                  TextButton(
                     onPressed: () {
-                      _userBloc?.add(UserEvent(type: UserEventType.skipSignIn));
+                      _showDialog(context);
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [Text('Skip'), Icon(Icons.skip_next)],
+                    child: Text('Don\'t have an account? Sign Up'),
+                  ),
+                  SizedBox(
+                    width: 190.0,
+                    child: TextButton(
+                      onPressed: () {
+                        _userBloc?.add(
+                          UserEvent(type: UserEventType.skipSignIn),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [Text('Skip'), Icon(Icons.skip_next)],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

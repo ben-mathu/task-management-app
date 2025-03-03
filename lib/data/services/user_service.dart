@@ -3,10 +3,6 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserService {
-  listenForAuth({required void Function(User? user) onAuthChanged}) async {
-    return FirebaseAuth.instance.authStateChanges().listen(onAuthChanged);
-  }
-
   Future<UserCredential> loginUser({
     required String email,
     required String password,

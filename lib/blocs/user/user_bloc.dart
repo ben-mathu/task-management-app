@@ -10,17 +10,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   UserBloc() : super(UserState(type: UserStateType.initial)) {
     on<UserEvent>((event, emit) {
-      if (event.type == UserEventType.appOpened) {
-        userService.listenForAuth(
-          onAuthChanged: (User? user) {
-            if (user != null) {
-              emit(UserState(type: UserStateType.signedIn));
-            } else {
-              emit(UserState(type: UserStateType.signedOut));
-            }
-          },
-        );
-      } else if (event.type == UserEventType.openSignUpWindow) {
+      if (event.type == UserEventType.openSignUpWindow) {
         emit(UserState(type: UserStateType.requireSignUp));
       } else if (event.type == UserEventType.loginFailed) {
         emit(UserState(type: UserStateType.loginError, code: event.code));

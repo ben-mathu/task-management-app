@@ -124,3 +124,4 @@ app.*.symbols
 lib/firebase_options.dart
 /.idea
 **/.DS_Store
+**/*.g.dart
