@@ -59,7 +59,3 @@ Start the application by running this command
 ```shell
 flutter run
 ```
-
-## Installable apk
-
-Find an installable apk from [here](./apk/app-release.apk)
