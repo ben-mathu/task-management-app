@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class CustomButton extends StatefulWidget {
+class CustomTextButton extends StatefulWidget {
   final String? text;
   final VoidCallback onPressed;
   final bool isLoading;
-  const CustomButton({
+  const CustomTextButton({
     super.key,
     required this.onPressed,
     this.text,
@@ -12,22 +12,17 @@ class CustomButton extends StatefulWidget {
   });
 
   @override
-  State<CustomButton> createState() => _CustomButtonState();
+  State<CustomTextButton> createState() => _CustomTextButtonState();
 }
 
-class _CustomButtonState extends State<CustomButton> {
+class _CustomTextButtonState extends State<CustomTextButton> {
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: SizedBox(
-        child: ElevatedButton(
+        child: TextButton(
           onPressed: widget.onPressed,
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            ),
-          ),
           child:
               widget.isLoading
                   ? SizedBox(

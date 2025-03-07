@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jenga_planner/blocs/task/task_bloc.dart';
 import 'package:jenga_planner/blocs/task/task_event.dart';
+import 'package:jenga_planner/data/app_database.dart';
 import 'package:jenga_planner/data/services/task_service.dart';
 import 'package:jenga_planner/widgets/custom_button_widget.dart';
 
 class TaskForm extends StatefulWidget {
+  final GlobalKey formKey;
+  final TaskData? task;
+  final Function(String value) onTitleChanges;
+  final Function(String value) onDescriptionChanges;
+  final Function(List<String> subtasks) onSubtasksUpdated;
+  TaskForm(this.formKey, this.task, this.onTitleChanges, this.onDescriptionChanges, this.onSubtasksUpdated, {super.key});
+
   @override
   State<StatefulWidget> createState() => _TaskFormState();
 }
@@ -13,7 +21,6 @@ class TaskForm extends StatefulWidget {
 class _TaskFormState extends State<TaskForm> {
   final TaskService _taskService = TaskService();
 
-  final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   List<TextEditingController> _subTaskControllers = [];
@@ -21,6 +28,7 @@ class _TaskFormState extends State<TaskForm> {
   void _addSubTask() {
     setState(() {
       _subTaskControllers.add(TextEditingController());
+      widget.onSubtasksUpdated(_subTaskControllers.map((controller) => controller.text).toList());
     });
   }
 
@@ -28,20 +36,9 @@ class _TaskFormState extends State<TaskForm> {
     setState(() {
       _subTaskControllers[index].dispose();
       _subTaskControllers.removeAt(index);
+
+      widget.onSubtasksUpdated(_subTaskControllers.map((controller) => controller.text).toList());
     });
-  }
-
-  _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      List<String> subTasks =
-          _subTaskControllers.map((controller) => controller.text).toList();
-
-      await _taskService.saveTaskWithSubtasks(
-        _titleController.text,
-        _descriptionController.text,
-        subTasks,
-      );
-    }
   }
 
   @override
@@ -49,7 +46,7 @@ class _TaskFormState extends State<TaskForm> {
     final taskBloc = BlocProvider.of<TaskBloc>(context);
 
     return Form(
-      key: _formKey,
+      key: widget.formKey,
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,6 +56,7 @@ class _TaskFormState extends State<TaskForm> {
               controller: _titleController,
               decoration: InputDecoration(labelText: 'Task Title'),
               validator: (value) => value!.isEmpty ? 'Title is required' : null,
+              onChanged: (value) => widget.onTitleChanges(value),
             ),
             SizedBox(height: 10),
 
@@ -69,6 +67,7 @@ class _TaskFormState extends State<TaskForm> {
               maxLines: 3,
               validator:
                   (value) => value!.isEmpty ? 'Description is required' : null,
+              onChanged: (value) => widget.onDescriptionChanges(value),
             ),
             SizedBox(height: 10),
 
@@ -110,18 +109,6 @@ class _TaskFormState extends State<TaskForm> {
                 onPressed: _addSubTask,
                 icon: Icon(Icons.add),
                 label: Text('Add Sub-Task'),
-              ),
-            ),
-
-            // Submit Button
-            SizedBox(height: 20),
-            Center(
-              child: CustomButton(
-                onPressed: () async {
-                  await _submitForm();
-                  taskBloc.add(TaskEvent(TaskEventType.notifyTaskListChanged));
-                },
-                text: 'Submit Task',
               ),
             ),
           ],

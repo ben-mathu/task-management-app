@@ -2,7 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:jenga_planner/data/app_database.dart';
 
 class TaskService {
-  final _database = AppDatabase();
+  final _database = AppDatabase.getDatabase();
 
   saveTaskWithSubtasks(
     String title,
@@ -39,5 +39,11 @@ class TaskService {
 
   Future<List<TaskData>> getTasks() {
     return _database.select(_database.task).get();
+  }
+
+  Future<void> updateTask(int id, String title, String description) async {
+    await _database
+        .update(_database.task).write(TaskCompanion(id: Value(id), title: Value(title), description: Value(description)))
+    ;
   }
 }

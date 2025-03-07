@@ -14,4 +14,10 @@ class AppDatabase extends _$AppDatabase {
   static QueryExecutor _openConnection() {
     return driftDatabase(name: 'jenga', native: const DriftNativeOptions());
   }
+
+  static AppDatabase? database;
+  static AppDatabase getDatabase() {
+    database ??= AppDatabase();
+    return database!;
+  }
 }

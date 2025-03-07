@@ -5,6 +5,8 @@ import 'package:jenga_planner/blocs/task/task_state.dart';
 import 'package:jenga_planner/data/app_database.dart';
 import 'package:jenga_planner/data/services/task_service.dart';
 import 'package:jenga_planner/widgets/custom_button_widget.dart';
+import 'package:jenga_planner/widgets/custom_text_button_widget.dart';
+import 'package:jenga_planner/widgets/form_alert_dialog_widget.dart';
 import 'package:jenga_planner/widgets/task_form.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -84,7 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               size: 16,
                               color: Colors.grey,
                             ),
-                            onTap: () {},
+                            onTap: () {
+                              _showDialog(context, task);
+                            },
                           ),
                         );
                       },
@@ -101,11 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> _showDialog(BuildContext context) {
+  Future<void> _showDialog(BuildContext context, [TaskData? task]) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(title: Text('Add Task'), content: TaskForm());
+        return FormAlertDialog(task: task);
       },
     );
   }
