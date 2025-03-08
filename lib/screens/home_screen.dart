@@ -17,18 +17,28 @@ class _HomeScreenState extends State<HomeScreen> {
   List<TaskData> _tasks = List.empty();
 
   @override
+  void initState() {
+    super.initState();
+    _getAllTasks();
+  }
+
+  void _getAllTasks() {
+    _taskService.getTasks().then(
+          (tasks) => {
+        setState(() {
+          _tasks = tasks;
+        }),
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocListener<TaskBloc, TaskState>(
       listener: (BuildContext context, TaskState state) {
         if (state.type == TaskStateType.update) {
           Navigator.pop(context);
-          _taskService.getTasks().then(
-            (tasks) => {
-              setState(() {
-                _tasks = tasks;
-              }),
-            },
-          );
+          _getAllTasks();
         }
       },
       child: Scaffold(
