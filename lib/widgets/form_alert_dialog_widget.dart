@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:jenga_planner/blocs/task/task_bloc.dart';
+import 'package:jenga_planner/blocs/task/task_event.dart';
 import 'package:jenga_planner/data/app_database.dart';
 import 'package:jenga_planner/data/services/task_service.dart';
 import 'package:jenga_planner/widgets/custom_text_button_widget.dart';
@@ -24,47 +27,51 @@ class _FormAlertDialogState extends State<FormAlertDialog> {
     _taskService.updateTask(id, _title!, _description!);
   }
 
-  _submitForm() async {
+  Future<bool> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       await _taskService.saveTaskWithSubtasks(
         _title!,
         _description!,
         _subTasks,
       );
+      return true;
     }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
+    final _taskBloc = BlocProvider.of<TaskBloc>(context);
     return AlertDialog(
       title: Text('Add Task'),
       content: TaskForm(
         _formKey,
         widget.task,
-        (value) {
-          setState(() {
-            _title = value;
-          });
+        onTitleChanges: (value) {
+          _title = value;
         },
-        (value) {
-          setState(() {
-            _description = value;
-          });
+        onDescriptionChanges: (value) {
+          _description = value;
         },
-        (List<String> subtasks) {
+        onSubtasksUpdated: (List<String> subtasks) {
           _subTasks = subtasks;
         },
       ),
       actions: [
         Row(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             CustomTextButton(onPressed: () {
               Navigator.pop(context);
             }, text: 'Dismiss'),
-            CustomTextButton(onPressed: () {
+            CustomTextButton(onPressed: () async {
               if (widget.task == null) {
-                _submitForm();
+                var isSaved = await _submitForm();
+
+                if (isSaved && mounted) {
+                  _taskBloc.add(TaskEvent(TaskEventType.notifyTaskListChanged));
+                }
               } else {
                 _updateTask(widget.task!.id);
               }

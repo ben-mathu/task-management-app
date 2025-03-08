@@ -10,14 +10,13 @@ class TaskForm extends StatefulWidget {
   final Function(String value) onTitleChanges;
   final Function(String value) onDescriptionChanges;
   final Function(List<String> subtasks) onSubtasksUpdated;
-  TaskForm(this.formKey, this.task, this.onTitleChanges, this.onDescriptionChanges, this.onSubtasksUpdated, {super.key});
+  TaskForm(this.formKey, this.task, {super.key, required this.onTitleChanges, required this.onDescriptionChanges, required this.onSubtasksUpdated});
 
   @override
   State<StatefulWidget> createState() => _TaskFormState();
 }
 
 class _TaskFormState extends State<TaskForm> {
-  final TaskService _taskService = TaskService();
 
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -26,7 +25,6 @@ class _TaskFormState extends State<TaskForm> {
   void _addSubTask() {
     setState(() {
       _subTaskControllers.add(TextEditingController());
-      widget.onSubtasksUpdated(_subTaskControllers.map((controller) => controller.text).toList());
     });
   }
 
@@ -39,9 +37,12 @@ class _TaskFormState extends State<TaskForm> {
     });
   }
 
+  void _updateSubTask(int index) {
+    widget.onSubtasksUpdated(_subTaskControllers.map((controller) => controller.text).toList());
+  }
+
   @override
   Widget build(BuildContext context) {
-    final taskBloc = BlocProvider.of<TaskBloc>(context);
 
     return Form(
       key: widget.formKey,
@@ -89,6 +90,7 @@ class _TaskFormState extends State<TaskForm> {
                                 value!.isEmpty
                                     ? 'Sub-task cannot be empty'
                                     : null,
+                        onChanged: (value) => _updateSubTask(index),
                       ),
                     ),
                     IconButton(
