@@ -22,6 +22,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _getAllTasks();
   }
 
+  @override
+  void dispose() {
+    _tasks = List.empty();
+    super.dispose();
+  }
+
   void _getAllTasks() {
     _taskService.getTasks().then(
           (tasks) => {
