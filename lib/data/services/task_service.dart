@@ -57,11 +57,15 @@ class TaskService {
     return (_database.select(_database.checkList)..where((checklist) => checklist.taskId.equals(taskId))).get();
   }
 
-  Future<void> deleteSubtaskById(int subtaskId) async {
-    return (_database.delete(_database.checkList).where((checklist) => checklist.id.equals(subtaskId)));
+  Future<int> deleteSubtaskById(int subtaskId) async {
+    return (_database.delete(_database.checkList)..where((checklist) => checklist.id.equals(subtaskId))).go();
   }
   
   Future<void> updateSubtask(CheckListCompanion checklist) {
     return _database.update(_database.checkList).write(checklist);
+  }
+
+  Future<int> deleteTask(int id) async {
+    return (_database.delete(_database.task)..where((task) => task.id.equals(id))).go();
   }
 }

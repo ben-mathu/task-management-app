@@ -4,10 +4,12 @@ class CustomTextButton extends StatefulWidget {
   final String? text;
   final VoidCallback onPressed;
   final bool isLoading;
+  final Color? textColor;
   const CustomTextButton({
     super.key,
     required this.onPressed,
     this.text,
+    this.textColor,
     this.isLoading = false,
   });
 
@@ -30,7 +32,7 @@ class _CustomTextButtonState extends State<CustomTextButton> {
                     height: 20.0,
                     child: CircularProgressIndicator(),
                   )
-                  : Text(widget.text!),
+                  : Text(widget.text!, style: TextStyle(color: widget.textColor),),
         ),
       ),
     );
