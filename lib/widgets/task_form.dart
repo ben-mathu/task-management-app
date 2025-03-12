@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jenga_planner/blocs/task/task_bloc.dart';
 import 'package:jenga_planner/data/app_database.dart';
 import 'package:jenga_planner/data/services/task_service.dart';
 
@@ -10,16 +8,19 @@ class TaskForm extends StatefulWidget {
   final Function(String value) onTitleChanges;
   final Function(String value) onDescriptionChanges;
   final Function(List<String> subtasks) onSubtasksUpdated;
-  TaskForm(this.formKey, this.task, {super.key, required this.onTitleChanges, required this.onDescriptionChanges, required this.onSubtasksUpdated});
+  final Function(int subtaskId)  onRemoveSubtask;
+  TaskForm(this.formKey, this.task, {super.key, required this.onTitleChanges, required this.onDescriptionChanges, required this.onSubtasksUpdated, required this.onRemoveSubtask});
 
   @override
   State<StatefulWidget> createState() => _TaskFormState();
 }
 
 class _TaskFormState extends State<TaskForm> {
+  final _taskService = TaskService();
+  List<CheckListData> _subtasks = [];
 
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
+  TextEditingController? _titleController;
+  TextEditingController? _descriptionController;
   List<TextEditingController> _subTaskControllers = [];
 
   void _addSubTask() {
@@ -32,8 +33,11 @@ class _TaskFormState extends State<TaskForm> {
     setState(() {
       _subTaskControllers[index].dispose();
       _subTaskControllers.removeAt(index);
-
       widget.onSubtasksUpdated(_subTaskControllers.map((controller) => controller.text).toList());
+
+      if (index <= _subtasks.length - 1) {
+        widget.onRemoveSubtask(_subtasks[index].id);
+      }
     });
   }
 
@@ -41,8 +45,22 @@ class _TaskFormState extends State<TaskForm> {
     widget.onSubtasksUpdated(_subTaskControllers.map((controller) => controller.text).toList());
   }
 
+  void _getAllSubtasksByTaskId(int taskId) async {
+    _subtasks =  await _taskService.getSubtasksByTaskId(taskId);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (widget.task != null) {
+      _titleController = TextEditingController(text: widget.task!.title);
+      _descriptionController =
+          TextEditingController(text: widget.task!.description);
+      _getAllSubtasksByTaskId(widget.task!.id);
+    } else {
+      _titleController = TextEditingController();
+      _descriptionController = TextEditingController();
+      _titleController = TextEditingController();
+    }
 
     return Form(
       key: widget.formKey,

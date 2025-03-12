@@ -56,26 +56,37 @@ class _FormAlertDialogState extends State<FormAlertDialog> {
         onSubtasksUpdated: (List<String> subtasks) {
           _subTasks = subtasks;
         },
+        onRemoveSubtask: (int subtaskId) async {
+          await _taskService.deleteSubtaskById(subtaskId);
+        },
       ),
       actions: [
         Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            CustomTextButton(onPressed: () {
-              Navigator.pop(context);
-            }, text: 'Dismiss'),
-            CustomTextButton(onPressed: () async {
-              if (widget.task == null) {
-                var isSaved = await _submitForm();
+            CustomTextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              text: 'Dismiss',
+            ),
+            CustomTextButton(
+              onPressed: () async {
+                if (widget.task == null) {
+                  var isSaved = await _submitForm();
 
-                if (isSaved && mounted) {
-                  _taskBloc.add(TaskEvent(TaskEventType.notifyTaskListChanged));
+                  if (isSaved && mounted) {
+                    _taskBloc.add(
+                      TaskEvent(TaskEventType.notifyTaskListChanged),
+                    );
+                  }
+                } else {
+                  _updateTask(widget.task!.id);
                 }
-              } else {
-                _updateTask(widget.task!.id);
-              }
-            }, text: widget.task == null ? 'Save Task' : 'Update Task'),
+              },
+              text: widget.task == null ? 'Save Task' : 'Update Task',
+            ),
           ],
         ),
       ],
