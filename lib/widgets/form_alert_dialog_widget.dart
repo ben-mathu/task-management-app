@@ -41,8 +41,8 @@ class _FormAlertDialogState extends State<FormAlertDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final _taskBloc = BlocProvider.of<TaskBloc>(context);
-    final _theme = Theme.of(context);
+    final taskBloc = BlocProvider.of<TaskBloc>(context);
+    final theme = Theme.of(context);
 
     return AlertDialog(
       title: Text('Add Task'),
@@ -71,13 +71,13 @@ class _FormAlertDialogState extends State<FormAlertDialog> {
               onPressed: () async {
                 if (widget.task != null) {
                   await _taskService.deleteTask(widget.task!.id);
-                  _taskBloc.add(TaskEvent(TaskEventType.notifyTaskListChanged));
+                  taskBloc.add(TaskEvent(TaskEventType.notifyTaskListChanged));
                 } else {
                   Navigator.pop(context);
                 }
               },
               text: widget.task != null ? 'Delete' : 'Dismiss',
-              textColor: _theme.colorScheme.error,
+              textColor: theme.colorScheme.error,
             ),
             CustomTextButton(
               onPressed: () async {
@@ -85,7 +85,7 @@ class _FormAlertDialogState extends State<FormAlertDialog> {
                   var isSaved = await _submitForm();
 
                   if (isSaved && mounted) {
-                    _taskBloc.add(
+                    taskBloc.add(
                       TaskEvent(TaskEventType.notifyTaskListChanged),
                     );
                   }

@@ -5,6 +5,7 @@ import 'package:jenga_planner/blocs/task/task_state.dart';
 import 'package:jenga_planner/data/app_database.dart';
 import 'package:jenga_planner/data/services/task_service.dart';
 import 'package:jenga_planner/widgets/custom_button_widget.dart';
+import 'package:jenga_planner/widgets/filters_widget.dart';
 import 'package:jenga_planner/widgets/form_alert_dialog_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TaskService _taskService = TaskService();
   List<TaskData> _tasks = List.empty();
+  List<Object> _filters = const [TaskSortType.date];
 
   @override
   void initState() {
@@ -30,10 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _getAllTasks() {
     _taskService.getTasks().then(
-          (tasks) => {
-        setState(() {
-          _tasks = tasks;
-        }),
+      (tasks) => {
+        if (mounted)
+          {
+            setState(() {
+              _tasks = tasks;
+            }),
+          },
       },
     );
   }
@@ -51,6 +56,14 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: const Text('Your tasks'),
           automaticallyImplyLeading: false,
+          actions: [
+            IconButton(
+              onPressed: () {
+                _showFilterBottomSheet(context);
+              },
+              icon: Icon(Icons.filter_alt_outlined),
+            ),
+          ],
         ),
         body: SizedBox(
           width: double.infinity,
@@ -124,6 +137,28 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return FormAlertDialog(task: task);
+      },
+    );
+  }
+
+  Future<void> _showFilterBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter refresh) {
+            return Filters(
+              filters: _filters,
+              onFiltersChanged: (List<Object> newFilters) {
+                debugPrint('State changed');
+                refresh(() {
+                  _filters = newFilters;
+                  debugPrint('$_filters');
+                });
+              },
+            );
+          },
+        );
       },
     );
   }
