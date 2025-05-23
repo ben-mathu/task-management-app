@@ -15,17 +15,7 @@ class TaskService {
     );
     final taskId = await saveTask(task);
 
-    final dbSubtasks = await getSubtasksByTaskId(taskId);
-    var startingIndex = 0;
-    if (dbSubtasks.isNotEmpty) {
-      for (final (index, subtask) in dbSubtasks.indexed) {
-        final checklist = subtask.toCompanion(true);
-        await updateSubtask(checklist.copyWith(title: Value(subtasks[index])));
-        startingIndex = index;
-      }
-    }
-
-    for (var i = startingIndex > 0 ? startingIndex + 1 : startingIndex; i < subtasks.length; i++) {
+    for (var i = 0; i < subtasks.length; i++) {
       final checkList = CheckListCompanion(title: Value(subtasks[i]), taskId: Value(taskId));
       await saveSubTask(checkList);
     }
@@ -47,10 +37,24 @@ class TaskService {
     return _database.select(_database.task).get();
   }
 
-  Future<void> updateTask(int id, String title, String description) async {
-    await _database
-        .update(_database.task).write(TaskCompanion(id: Value(id), title: Value(title), description: Value(description)))
-    ;
+  Future<void> updateTask(int id, String title, String description, List<String> subtasks) async {
+    await (_database
+        .update(_database.task)..where((task) => task.id.equals(id))).write(TaskCompanion(title: Value(title), description: Value(description)));
+
+    final dbSubtasks = await getSubtasksByTaskId(id);
+    var startingIndex = 0;
+    if (dbSubtasks.isNotEmpty) {
+      for (final (index, subtask) in dbSubtasks.indexed) {
+        await updateSubtask(subtask.id, subtasks[index]);
+        startingIndex = index;
+      }
+      startingIndex++;
+    }
+
+    for (var i = startingIndex > 0 ? startingIndex + 1 : startingIndex; i < subtasks.length; i++) {
+      final checkList = CheckListCompanion(title: Value(subtasks[i]), taskId: Value(id));
+      await saveSubTask(checkList);
+    }
   }
 
   Future<List<CheckListData>> getSubtasksByTaskId(int taskId) {
@@ -61,8 +65,8 @@ class TaskService {
     return (_database.delete(_database.checkList)..where((checklist) => checklist.id.equals(subtaskId))).go();
   }
   
-  Future<void> updateSubtask(CheckListCompanion checklist) {
-    return _database.update(_database.checkList).write(checklist);
+  Future<void> updateSubtask(int checklistId, String title) {
+    return (_database.update(_database.checkList)..where((checklist) => checklist.id.equals(checklistId))).write(CheckListCompanion(title: Value(title)));
   }
 
   Future<int> deleteTask(int id) async {

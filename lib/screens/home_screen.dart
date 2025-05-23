@@ -5,6 +5,7 @@ import 'package:jenga_planner/blocs/task/task_state.dart';
 import 'package:jenga_planner/data/app_database.dart';
 import 'package:jenga_planner/data/services/task_service.dart';
 import 'package:jenga_planner/widgets/custom_button_widget.dart';
+import 'package:jenga_planner/widgets/date_sorted_task_list.dart';
 import 'package:jenga_planner/widgets/filters_widget.dart';
 import 'package:jenga_planner/widgets/form_alert_dialog_widget.dart';
 
@@ -88,35 +89,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (context, index) {
                         final task = _tasks[index];
 
-                        return Card(
-                          margin: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 16,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              task.title,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            subtitle: Text(
-                              task.description!.length > 50
-                                  ? '${task.description!.substring(0, 50)}...'
-                                  : task.description!,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            trailing: Icon(
-                              Icons.arrow_forward_ios,
-                              size: 16,
-                              color: Colors.grey,
-                            ),
-                            onTap: () {
-                              _showDialog(context, task);
-                            },
-                          ),
+                        return DateSortedTaskList(
+                          task: task,
+                          openDialog: () {
+                            _showDialog(context, task);
+                          },
                         );
                       },
                     ),
