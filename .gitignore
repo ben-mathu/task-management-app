@@ -126,3 +126,4 @@ lib/firebase_options.dart
 **/.DS_Store
 **/*.g.dart
 /devtools_options.yaml
+**/.DS_Store
